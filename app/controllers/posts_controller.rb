@@ -1,19 +1,31 @@
 class PostsController < ApplicationController
   before_action :set_post, only: [:show, :edit, :update, :destroy]
+  before_action :authenticate_user!
   def index
     @posts = Post.all
   end
 
   def new
-    @post = Post.new
+    # @post = Post.new
+    @post = current_user.posts.build
   end
 
   def create
-    if @post = Post.create(post_params)
-      flash[:success] = "Your post success"
+    # if @post = Post.create(post_params)
+    #   flash[:success] = "Your post success"
+    #   redirect_to posts_path
+    # else
+    #   flash.now[:alert] = "Your post failed"
+    #   render :new
+    # end
+
+    @post = current_user.posts.build(post_params)
+
+    if @post.save
+      flash[:success] = "successful"
       redirect_to posts_path
     else
-      flash.now[:alert] = "Your post failed"
+      flash[:alert] = "failed"
       render :new
     end
   end
